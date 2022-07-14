@@ -7,30 +7,47 @@ using Microsoft.Extensions.Options;
 
 namespace EventTopicDemo;
 
-public class 
-    OrderEventGridHandler : IOrderEventGridHandler
+public class OrderEventGridHandler : IOrderEventGridHandler
 {
- 
-    private IOptions<EventGridSettings> _options;
-
+    private const string EventSubject = "OrderEvents";
+    private const string Version = "1.0";
+    private readonly IOptions<EventGridSettings> _options;
+    private readonly EventGridPublisherClient _client;
     public OrderEventGridHandler(IOptions<EventGridSettings> options)
     {
         _options = options;
+        _client= new EventGridPublisherClient(new Uri(_options.Value.Endpoint), new AzureKeyCredential(_options.Value.AccessKey));
     }
-    public async Task<SendOrderEventResponse> SendEventAsync( SendOrderEvent sendOrderEvent)
+    public async Task<SendOrderEventResponse> SendCreateOrderEventAsync(CreateOrderEvent createOrderEvent)
     {
-        EventGridPublisherClient client = new EventGridPublisherClient(new Uri(_options.Value.Endpoint),
-            new AzureKeyCredential(_options.Value.AccessKey));
-        
-        var serializationOptions = new JsonSerializerOptions() { WriteIndented = true };
-        var binaryData = new BinaryData(sendOrderEvent.Order, serializationOptions);
-        var eventGridEvent = new EventGridEvent("ExampleEventGridSubject", "OrderCreated", "1.0", binaryData);
-        var response =  await client.SendEventAsync(eventGridEvent);
-        Console.WriteLine("Sent Event off to EventGrid Demo");
-        var s = (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), response.Status.ToString());
+        return await SendData(OrderEventStatus.Created,  BinarizeData(createOrderEvent));
+    }
+
+    public async Task<SendOrderEventResponse> SendUpdateOrderEventAsync(UpdateOrderEvent updateOrderEvent)
+    {
+        return await SendData(OrderEventStatus.Updated,  BinarizeData(updateOrderEvent));
+    }
+
+    public async Task<SendOrderEventResponse> SendCancelOrderEventAsync(CancelOrderEvent cancelOrderEvent)
+    {
+        return await SendData(OrderEventStatus.Cancelled,  BinarizeData(cancelOrderEvent));
+    }
+
+    private async Task<SendOrderEventResponse> SendData(string eventType, BinaryData data)
+    {
+        var eventGridEvent = new EventGridEvent(EventSubject, eventType, Version, data);
+        var response =  await _client.SendEventAsync(eventGridEvent);
+        var status = (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), response.Status.ToString());
         return new SendOrderEventResponse()
         {
-            Status =s 
+            Status = status 
         };
-    }    
+    }
+
+    private static BinaryData BinarizeData(OrderCommand createOrderEvent)
+    {
+        var serializationOptions = new JsonSerializerOptions() { WriteIndented = true };
+        var binaryData = new BinaryData(createOrderEvent.Order, serializationOptions);
+        return binaryData;
+    }
 }

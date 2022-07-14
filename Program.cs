@@ -20,9 +20,13 @@ if (handler == null)
     Console.WriteLine(" --------- NULL IS DEFINED ---------");
 }
 
-var sendOrderEvent = new SendOrderEvent()
+var order = new Order();
+
+var sendOrderEvent = new CreateOrderEvent()
  {
-     Order = new Order()
+     Order = order
  };
- var status  = await handler.SendEventAsync(sendOrderEvent);
+ var status  = await handler.SendCreateOrderEventAsync(sendOrderEvent);
  Console.WriteLine(JsonSerializer.Serialize(status));
+status = await handler.SendCancelOrderEventAsync(new CancelOrderEvent() { Order = order });
+Console.WriteLine(JsonSerializer.Serialize(status));

@@ -2,5 +2,8 @@
 
 public interface IOrderEventGridHandler
 {
-    Task<SendOrderEventResponse> SendEventAsync(SendOrderEvent sendOrderEvent);
+    Task<SendOrderEventResponse> SendCreateOrderEventAsync(CreateOrderEvent createOrderEvent);
+    Task<SendOrderEventResponse> SendUpdateOrderEventAsync(UpdateOrderEvent updateOrderEvent);
+    Task<SendOrderEventResponse> SendCancelOrderEventAsync(CancelOrderEvent cancelOrderEvent);
 }
+

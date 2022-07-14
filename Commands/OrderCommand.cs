@@ -1,6 +1,6 @@
 ﻿namespace EventTopicDemo;
 
-public abstract class SendOrderCommand
+public abstract class OrderCommand
 {
     public Order Order { get; set; }
 }
