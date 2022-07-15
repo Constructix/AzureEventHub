@@ -50,10 +50,10 @@ Order BuildOrder()
     return order1;
 }
 
-ValidationResult SetupValidation(Order order2)
+ValidationResult SetupValidation(Order currentOrder)
 {
     var validation = new OrderValidator();
-    var validationResult1 = validation.Validate(order2);
+    var validationResult1 = validation.Validate(currentOrder);
     return validationResult1;
 }
 
@@ -65,10 +65,10 @@ IConfigurationRoot BuildConfiguration()
     return configurationRoot;
 }
 
-ServiceProvider AddServices(IConfigurationRoot config1)
+ServiceProvider AddServices(IConfigurationRoot currentConfiguration)
 {
     var serviceProvider = new ServiceCollection()
-        .Configure<EventGridSettings>(config1.GetSection("EventGridSettings"))
+        .Configure<EventGridSettings>(currentConfiguration.GetSection("EventGridSettings"))
         .AddScoped<IOrderEventGridHandler, OrderEventGridHandler>()
         .BuildServiceProvider();
     return serviceProvider;
