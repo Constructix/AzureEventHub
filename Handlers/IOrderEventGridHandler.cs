@@ -1,4 +1,6 @@
-﻿namespace EventTopicDemo;
+using EventTopicDemo.Responses;
+
+namespace EventTopicDemo.Handlers;
 
 public interface IOrderEventGridHandler
 {

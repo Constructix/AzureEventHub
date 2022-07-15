@@ -1,11 +1,11 @@
-﻿using System.Net;
-using System.Reflection.Metadata;
+using System.Net;
 using System.Text.Json;
 using Azure;
 using Azure.Messaging.EventGrid;
+using EventTopicDemo.Responses;
 using Microsoft.Extensions.Options;
 
-namespace EventTopicDemo;
+namespace EventTopicDemo.Handlers;
 
 public class OrderEventGridHandler : IOrderEventGridHandler
 {
@@ -18,21 +18,12 @@ public class OrderEventGridHandler : IOrderEventGridHandler
         _options = options;
         _client= new EventGridPublisherClient(new Uri(_options.Value.Endpoint), new AzureKeyCredential(_options.Value.AccessKey));
     }
-    public async Task<SendOrderEventResponse> SendCreateOrderEventAsync(CreateOrderEvent createOrderEvent)
-    {
-        return await SendData(OrderEventStatus.Created,  BinarizeData(createOrderEvent));
-    }
+    public async Task<SendOrderEventResponse> SendCreateOrderEventAsync(CreateOrderEvent createOrderEvent) => await SendData(OrderEventStatus.Created,  BinarizeData(createOrderEvent));
 
-    public async Task<SendOrderEventResponse> SendUpdateOrderEventAsync(UpdateOrderEvent updateOrderEvent)
-    {
-        return await SendData(OrderEventStatus.Updated,  BinarizeData(updateOrderEvent));
-    }
-
-    public async Task<SendOrderEventResponse> SendCancelOrderEventAsync(CancelOrderEvent cancelOrderEvent)
-    {
-        return await SendData(OrderEventStatus.Cancelled,  BinarizeData(cancelOrderEvent));
-    }
-
+    public async Task<SendOrderEventResponse> SendUpdateOrderEventAsync(UpdateOrderEvent updateOrderEvent) => await SendData(OrderEventStatus.Updated,  BinarizeData(updateOrderEvent));
+    
+    public async Task<SendOrderEventResponse> SendCancelOrderEventAsync(CancelOrderEvent cancelOrderEvent) => await SendData(OrderEventStatus.Cancelled,  BinarizeData(cancelOrderEvent));
+    
     private async Task<SendOrderEventResponse> SendData(string eventType, BinaryData data)
     {
         var eventGridEvent = new EventGridEvent(EventSubject, eventType, Version, data);

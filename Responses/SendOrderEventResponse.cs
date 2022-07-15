@@ -1,6 +1,6 @@
-﻿using System.Net;
+using System.Net;
 
-namespace EventTopicDemo;
+namespace EventTopicDemo.Responses;
 
 public class SendOrderEventResponse
 {

@@ -1,4 +1,4 @@
-namespace EventTopicDemo;
+namespace EventTopicDemo.Handlers;
 
 public class OrderEventStatus
 {
