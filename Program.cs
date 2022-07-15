@@ -36,12 +36,12 @@ Order BuildOrder()
             new SubOrder()
             {
                 IsOrderPickUp = true,
-                DeliveryAddress = new Address() { StreetName = "11 Carbine Court", Postcode = "4306", Suburb = "Karalee", State = "Qld"},
+                DeliveryAddress = new Address() { StreetName = "190 Kings Road", Postcode = "4306", Suburb = "Karalee", State = "Qld"},
                 Customer = new Customer()
                 {
-                    FirstName = "Richard", LastName = "Jones", Address = new Address()
+                    FirstName = "Bill", LastName = "Smith", Address = new Address()
                     {
-                        StreetName = "11 Carbine Court", Suburb = "Karalee", Postcode = "4306", State = "QLD"
+                        StreetName = "190 Kings Road", Suburb = "Karalee", Postcode = "4306", State = "QLD"
                     }
                 }
             }
