@@ -11,7 +11,7 @@ var config = BuildConfiguration();
 var svc = AddServices(config);
 var handler = svc.GetService<IOrderEventGridHandler>();
 var order = BuildOrder();
-var validationResult = SetupValidation(order);
+var validationResult = new OrderValidator().Validate(order);
 
 if (!validationResult.IsValid)
 {
@@ -48,13 +48,6 @@ Order BuildOrder()
         }
     };
     return order1;
-}
-
-ValidationResult SetupValidation(Order currentOrder)
-{
-    var validation = new OrderValidator();
-    var validationResult1 = validation.Validate(currentOrder);
-    return validationResult1;
 }
 
 IConfigurationRoot BuildConfiguration()
